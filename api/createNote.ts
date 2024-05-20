@@ -6,7 +6,7 @@ const VOICE_NOTES_DATABASE_ID = "18b1a8af-d354-4fa2-80c5-8a200d1ff715";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only allow POST requests
-  if (req.method !== "post") {
+  if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
   const authorization = req.headers.authorization;
