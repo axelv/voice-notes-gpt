@@ -14,6 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const data = req.body;
+  console.log(data);
   const jsonData = JSON.parse(data) as { title: string; content: string };
   const bearer = authorization.split(" ")[1];
   const notion = new Client({ auth: bearer });
