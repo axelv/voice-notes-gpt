@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Client } from "@notionhq/client";
 
 // id must be formatted with hypens: 8-4-4-4-12
-const VOICE_NOTES_DATABASE_ID = "18b1a8af-d354-4fa2-80c5-8a200d1ff715";
+const VOICE_NOTES_DATABASE_ID = "cdc513fe-3355-4860-8426-5f7945c3a670";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only allow POST requests
