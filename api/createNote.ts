@@ -1,5 +1,7 @@
+import { markdownToBlocks, markdownToRichText } from "@tryfabric/martian";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Client } from "@notionhq/client";
+import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 
 // id must be formatted with hypens: 8-4-4-4-12
 const VOICE_NOTES_DATABASE_ID = "cdc513fe-3355-4860-8426-5f7945c3a670";
@@ -15,6 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   const data = req.body as { title: string; content: string };
   const bearer = authorization.split(" ")[1];
+  const blocks = markdownToBlocks(data.content);
   const notion = new Client({ auth: bearer });
   await notion.pages.create({
     parent: {
@@ -31,22 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ],
       },
     },
-    children: [
-      {
-        object: "block",
-        type: "paragraph",
-        paragraph: {
-          rich_text: [
-            {
-              type: "text",
-              text: {
-                content: data.content,
-              },
-            },
-          ],
-        },
-      },
-    ],
+    children: blocks as BlockObjectRequest[],
   });
   return res.json({
     message: "Success!",
