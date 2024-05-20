@@ -1,8 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Client } from "@notionhq/client";
 
-const VOICE_NOTES_URL =
-  "https://www.notion.so/Voice-Notes-GPT-18b1a8afd3544fa280c58a200d1ff715";
 // id must be formatted with hypens: 8-4-4-4-12
 const VOICE_NOTES_DATABASE_ID = "18b1a8af-d354-4fa2-80c5-8a200d1ff715";
 
