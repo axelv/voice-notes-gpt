@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "license": "MIT",
   "private": true,
   "devDependencies": {
