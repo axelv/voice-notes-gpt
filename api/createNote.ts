@@ -13,9 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!authorization) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const data = req.body;
-  console.log(data);
-  const jsonData = JSON.parse(data) as { title: string; content: string };
+  const data = req.body as { title: string; content: string };
   const bearer = authorization.split(" ")[1];
   const notion = new Client({ auth: bearer });
   await notion.pages.create({
@@ -27,7 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         title: [
           {
             text: {
-              content: jsonData.title,
+              content: data.title,
             },
           },
         ],
@@ -42,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             {
               type: "text",
               text: {
-                content: jsonData.content,
+                content: data.content,
               },
             },
           ],
