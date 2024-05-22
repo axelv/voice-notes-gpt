@@ -1,13 +1,8 @@
-import { markdownToBlocks, markdownToRichText } from "@tryfabric/martian";
+import { markdownToBlocks } from "@tryfabric/martian";
 import { Client } from "@notionhq/client";
 import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-export const runtime = "nodejs";
-
-// id must be formatted with hypens: 8-4-4-4-12
-const VOICE_NOTES_DATABASE_ID = "cdc513fe-3355-4860-8426-5f7945c3a670";
 
 const CreateVoiceNoteSchema = z.object({
   title: z.string(),
@@ -18,6 +13,34 @@ export async function GET() {
     message:
       "Welcome to the voice notes API. Use POST to create a new voice note.",
   });
+}
+
+class VoiceNotesError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "VoiceNotesError";
+  }
+}
+
+/**
+ * Get the database id for a database called "Voice Notes"
+ */
+function getVoiceNotesDatabaseId(notion: Client) {
+  return notion
+    .search({
+      filter: {
+        property: "object",
+        value: "database",
+      },
+      query: "Voice Notes",
+    })
+    .then((response) => {
+      if (response.results.length > 0) {
+        return response.results[0].id;
+      } else {
+        throw new VoiceNotesError("Voice Notes database not found");
+      }
+    });
 }
 
 export async function POST(request: NextRequest) {
@@ -37,9 +60,24 @@ export async function POST(request: NextRequest) {
   const bearer = authorization.split(" ")[1];
   const blocks = markdownToBlocks(data.content);
   const notion = new Client({ auth: bearer });
+  let database_id: string;
+  try {
+    database_id = await getVoiceNotesDatabaseId(notion);
+  } catch (e) {
+    if (e instanceof VoiceNotesError) {
+      return NextResponse.json(
+        { message: "Could not find Voice Notes database" },
+        { status: 404 },
+      );
+    }
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
   const page_response = await notion.pages.create({
     parent: {
-      database_id: VOICE_NOTES_DATABASE_ID,
+      database_id,
     },
     properties: {
       Name: {
