@@ -4,6 +4,8 @@ import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic"; // static by default, unless reading the request
+
 const CreateVoiceNoteSchema = z.object({
   title: z.string(),
   content: z.string(),
