@@ -6,8 +6,8 @@ import { createClient } from "@/utils/supabase/server";
 const oauth = new OAuth2Server({
   model: OAUTH2_MODEL,
 });
-const supabase = createClient();
 export async function GET(request: NextRequest) {
+  const supabase = createClient();
   const searchParams = new URL(request.url).searchParams;
 
   const {
