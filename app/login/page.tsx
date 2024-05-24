@@ -8,7 +8,7 @@ export default function Login() {
     <Auth
       supabaseClient={supabase}
       providers={["notion"]}
-      redirectTo="/auth/callback"
+      redirectTo="https://voice-notes-gpt.vercel.app/auth/callback"
     />
   );
 }
