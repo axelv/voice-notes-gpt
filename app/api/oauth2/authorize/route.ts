@@ -27,11 +27,13 @@ export async function GET(request: NextRequest) {
   });
   const res = new Response();
   await oauth.authorize(req, res, {
-    authenticateHandler() {
-      return {
-        id: user.id,
-        email: user.email,
-      };
+    authenticateHandler: {
+      handle() {
+        return {
+          id: user.id,
+          email: user.email,
+        };
+      },
     },
   });
   return new NextResponse(null, { headers: res.headers });
