@@ -13,7 +13,12 @@ if (
   !process.env.CLIENT_SECRET ||
   !process.env.CLIENT_REDIRECT_URI
 ) {
-  throw new Error("Missing environment variables");
+  throw new Error(
+    "Missing environment variables" +
+      process.env.CLIENT_ID +
+      process.env.CLIENT_SECRET +
+      process.env.CLIENT_REDIRECT_URI,
+  );
 }
 
 const supabase = createClient<Database>(
