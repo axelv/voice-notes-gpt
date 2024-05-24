@@ -3,7 +3,6 @@ import { createClient } from "@supabase/supabase-js";
 import {
   Client,
   Token,
-  TokenOptions,
   AuthorizationCode,
   User,
   RefreshToken,
@@ -12,7 +11,7 @@ import {
 if (
   !process.env.CLIENT_ID ||
   !process.env.CLIENT_SECRET ||
-  !process.env.REDIRECT_URI
+  !process.env.CLIENT_REDIRECT_URI
 ) {
   throw new Error("Missing environment variables");
 }
@@ -36,7 +35,7 @@ function getClient(clientId: string, clientSecret: string): Promise<Client> {
   ) {
     return Promise.resolve({
       id: clientId,
-      redirectUris: [process.env.REDIRECT_URI!],
+      redirectUris: [process.env.CLIENT_REDIRECT_URI!],
       accessTokenLifetime: 3600, // 1 hour
       refreshTokenLifetime: 86400, // 1 day
       grants: ["authorization_code", "refresh_token"],
