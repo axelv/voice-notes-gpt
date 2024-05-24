@@ -6,7 +6,6 @@ import { z } from "zod";
 import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../oauth2/model";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/app/database.types";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
 

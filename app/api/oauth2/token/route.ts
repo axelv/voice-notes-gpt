@@ -1,6 +1,9 @@
 import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
 import { NextRequest, NextResponse } from "next/server";
 import { OAUTH2_MODEL } from "../model";
+
+export const dynamic = "force-dynamic"; // static by default, unless reading the request
+
 const oauth = new OAuth2Server({
   model: OAUTH2_MODEL,
 });
