@@ -1,4 +1,4 @@
-import { OAuth2Server, Request, Response } from "@node-oauth/oauth2-server";
+import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
 import { NextRequest, NextResponse } from "next/server";
 import { OAUTH2_MODEL } from "../model";
 const oauth = new OAuth2Server({
