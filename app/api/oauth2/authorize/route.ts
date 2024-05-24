@@ -10,14 +10,14 @@ const oauth = new OAuth2Server({
 });
 export async function GET(request: NextRequest) {
   const supabase = createClient();
-  const searchParams = new URL(request.url).searchParams;
+  const { searchParams, origin } = new URL(request.url);
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect("/login");
+    return NextResponse.redirect(`${origin}/login`);
   }
 
   const req = new Request({
