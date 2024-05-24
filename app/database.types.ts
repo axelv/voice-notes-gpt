@@ -16,7 +16,7 @@ export type Database = {
           expires_at: string | null
           id: number
           scope: string[] | null
-          user_id: number | null
+          user_id: string | null
         }
         Insert: {
           access_token: string
@@ -24,7 +24,7 @@ export type Database = {
           expires_at?: string | null
           id?: number
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
         Update: {
           access_token?: string
@@ -32,17 +32,9 @@ export type Database = {
           expires_at?: string | null
           id?: number
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "access_token_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       authorization_code: {
         Row: {
@@ -52,7 +44,7 @@ export type Database = {
           id: number
           redirect_uri: string
           scope: string[] | null
-          user_id: number | null
+          user_id: string | null
         }
         Insert: {
           authorization_code: string
@@ -61,7 +53,7 @@ export type Database = {
           id?: number
           redirect_uri: string
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
         Update: {
           authorization_code?: string
@@ -70,17 +62,9 @@ export type Database = {
           id?: number
           redirect_uri?: string
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "authorization_code_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       refresh_token: {
         Row: {
@@ -89,7 +73,7 @@ export type Database = {
           id: number
           refresh_token: string
           scope: string[] | null
-          user_id: number | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -97,7 +81,7 @@ export type Database = {
           id?: number
           refresh_token: string
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -105,17 +89,9 @@ export type Database = {
           id?: number
           refresh_token?: string
           scope?: string[] | null
-          user_id?: number | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "refresh_token_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user: {
         Row: {

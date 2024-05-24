@@ -1,12 +1,22 @@
 import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../model";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 const oauth = new OAuth2Server({
   model: OAUTH2_MODEL,
 });
+const supabase = createClient();
 export async function GET(request: NextRequest) {
   const searchParams = new URL(request.url).searchParams;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect("/login");
+  }
 
   const req = new Request({
     headers: request.headers,
@@ -14,6 +24,13 @@ export async function GET(request: NextRequest) {
     query: Object.fromEntries(searchParams),
   });
   const res = new Response();
-  await oauth.authorize(req, res);
+  await oauth.authorize(req, res, {
+    authenticateHandler() {
+      return {
+        id: user.id,
+        email: user.email,
+      };
+    },
+  });
   return new NextResponse(null, { headers: res.headers });
 }
