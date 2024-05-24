@@ -4,5 +4,11 @@ import { Auth } from "@supabase/auth-ui-react";
 
 const supabase = createClient();
 export default function Login() {
-  return <Auth supabaseClient={supabase} providers={["notion"]} />;
+  return (
+    <Auth
+      supabaseClient={supabase}
+      providers={["notion"]}
+      redirectTo="/auth/callback"
+    />
+  );
 }
