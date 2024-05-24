@@ -7,5 +7,5 @@ const supabase = createClient(
 );
 
 export default function Login() {
-  return <Auth supabaseClient={supabase} />;
+  return <Auth supabaseClient={supabase} providers={["notion"]} />;
 }
