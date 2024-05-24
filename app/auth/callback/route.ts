@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { type CookieOptions, createServerClient } from "@supabase/ssr";
+import { Database } from "@/app/database.types";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -10,7 +11,7 @@ export async function GET(request: Request) {
 
   if (code) {
     const cookieStore = cookies();
-    const supabase = createServerClient(
+    const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -27,7 +28,19 @@ export async function GET(request: Request) {
         },
       },
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const {
+      error,
+      data: { session, user },
+    } = await supabase.auth.exchangeCodeForSession(code);
+    if (error || !session || !user) {
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
+    supabase.from("notion_token").upsert({
+      user_id: user.id,
+      access_token: session.provider_token,
+      refresh_token: session.refresh_token,
+    });
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
     }

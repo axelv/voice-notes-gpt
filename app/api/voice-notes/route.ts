@@ -3,6 +3,10 @@ import { Client } from "@notionhq/client";
 import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
+import { OAUTH2_MODEL } from "../oauth2/model";
+import { createClient } from "@/utils/supabase/server";
+import { Database } from "@/app/database.types";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
 
@@ -22,6 +26,17 @@ class VoiceNotesError extends Error {
     super(message);
     this.name = "VoiceNotesError";
   }
+}
+
+const oauth = new OAuth2Server({
+  model: OAUTH2_MODEL,
+});
+
+async function authenticate(request: NextRequest) {
+  const req = new Request();
+  const res = new Response();
+  const { user } = await oauth.authenticate(req, res, {});
+  return user.id as string;
 }
 
 /**
@@ -53,13 +68,33 @@ export async function POST(request: NextRequest) {
       { status: 405 },
     );
   }
-  const authorization = request.headers.get("Authorization");
-  if (!authorization) {
+  let user_id;
+  try {
+    user_id = await authenticate(request);
+  } catch (e) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
+  const supabase = createClient();
+  const { data: notionData, error } = await supabase
+    .from("notion_token")
+    .select("access_token")
+    .eq("user_id", user_id)
+    .single();
+
+  if (!notionData || error)
+    return NextResponse.json(
+      { message: "No access token found for Notion API. Please sign in." },
+      { status: 401 },
+    );
+  const { access_token: bearer } = notionData;
+  if (!bearer)
+    return NextResponse.json(
+      { message: "No access token found for Notion API. Please sign in." },
+      { status: 401 },
+    );
+
   const data = CreateVoiceNoteSchema.parse(await request.json());
-  const bearer = authorization.split(" ")[1];
   const blocks = markdownToBlocks(data.content);
   const notion = new Client({ auth: bearer });
   let database_id: string;

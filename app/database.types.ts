@@ -66,6 +66,35 @@ export type Database = {
         }
         Relationships: []
       }
+      notion_token: {
+        Row: {
+          access_token: string | null
+          created_at: string
+          refresh_token: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          created_at?: string
+          refresh_token?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          created_at?: string
+          refresh_token?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notion_token_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       refresh_token: {
         Row: {
           created_at: string
@@ -90,21 +119,6 @@ export type Database = {
           refresh_token?: string
           scope?: string[] | null
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      user: {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
         }
         Relationships: []
       }
