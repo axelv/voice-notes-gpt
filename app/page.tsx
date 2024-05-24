@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
-const supabase = createClient();
 export default async function Home() {
+  const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
