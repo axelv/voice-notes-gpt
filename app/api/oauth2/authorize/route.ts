@@ -36,5 +36,5 @@ export async function GET(request: NextRequest) {
       },
     },
   });
-  return new NextResponse(null, { headers: res.headers });
+  return new NextResponse(null, { headers: res.headers, status: res.status });
 }
