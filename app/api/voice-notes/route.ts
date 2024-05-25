@@ -32,7 +32,12 @@ const oauth = new OAuth2Server({
 });
 
 async function authenticate(request: NextRequest) {
-  const req = new Request();
+  const req = new Request({
+    headers: Object.fromEntries(request.headers),
+    method: request.method,
+    body: request.json(),
+    query: Object.fromEntries(new URL(request.url).searchParams),
+  });
   const res = new Response();
   const { user } = await oauth.authenticate(req, res, {});
   return user.id as string;
