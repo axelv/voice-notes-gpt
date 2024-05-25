@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   });
   const res = new Response();
   await oauth.token(req, res);
-  return new NextResponse(res.body, {
+  return NextResponse.json(res.body, {
     headers: res.headers,
     status: res.status,
   });
