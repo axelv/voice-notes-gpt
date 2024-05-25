@@ -9,11 +9,13 @@ import {
 const supabase = createClient();
 export default function Login() {
   return (
+    <main className="mx-auto max-w-lg">
     <Auth
       appearance={{ theme: ThemeSupa }}
       supabaseClient={supabase}
       providers={["notion"]}
       redirectTo="https://voice-notes-gpt.vercel.app/auth/callback"
     />
+    </main
   );
 }
