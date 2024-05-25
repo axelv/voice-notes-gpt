@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
     data = CreateVoiceNoteSchema.parse(await request.json());
   } catch (e) {
     if (e instanceof Error) console.error(e.message);
-    console.log("Request body: " + request.body);
+    console.log("Request body: " + request.text());
     return NextResponse.json(
       { message: "Invalid request body" },
       { status: 400 },
