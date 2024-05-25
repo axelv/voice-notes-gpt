@@ -149,8 +149,17 @@ export async function POST(request: NextRequest) {
       { status: 401 },
     );
   }
-
-  const data = CreateVoiceNoteSchema.parse(await request.json());
+  let data: z.infer<typeof CreateVoiceNoteSchema> | null = null;
+  try {
+    data = CreateVoiceNoteSchema.parse(await request.json());
+  } catch (e) {
+    if (e instanceof Error) console.error(e.message);
+    console.log("Request body: " + request.body);
+    return NextResponse.json(
+      { message: "Invalid request body" },
+      { status: 400 },
+    );
+  }
   const blocks = markdownToBlocks(data.content);
   const notion = new Client({ auth: bearer });
   let database_id: string;
