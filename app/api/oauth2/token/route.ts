@@ -28,7 +28,10 @@ export async function POST(request: NextRequest) {
       body: await request.json(),
     });
   }
-  if (!req) throw new Error("Unsupported Content-Type: "+request.headers.get("Content-Type")+");
+  if (!req)
+    throw new Error(
+      "Unsupported Content-Type: " + request.headers.get("Content-Type"),
+    );
   const res = new Response();
   await oauth.token(req, res);
   return new NextResponse(res.body, {
