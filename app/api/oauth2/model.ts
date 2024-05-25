@@ -33,10 +33,13 @@ class AuthorizationError extends Error {
   }
 }
 
-function getClient(clientId: string, clientSecret: string): Promise<Client> {
+function getClient(
+  clientId: string,
+  clientSecret: string | null,
+): Promise<Client> {
   if (
     clientId == process.env.CLIENT_ID &&
-    clientSecret == process.env.CLIENT_SECRET
+    (clientSecret == process.env.CLIENT_SECRET || !clientSecret)
   ) {
     return Promise.resolve({
       id: clientId,
