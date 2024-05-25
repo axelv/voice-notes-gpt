@@ -3,7 +3,13 @@ import { Client } from "@notionhq/client";
 import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
+import OAuth2Server, {
+  Request,
+  Response,
+  UnauthorizedRequestError,
+  InvalidTokenError,
+  InsufficientScopeError,
+} from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../oauth2/model";
 import { createClient } from "@/utils/supabase/server";
 
@@ -77,12 +83,30 @@ export async function POST(request: NextRequest) {
     user_id = await authenticate(request);
   } catch (e) {
     console.warn(e);
-    if (e instanceof Error)
+    if (e instanceof UnauthorizedRequestError) {
       return NextResponse.json(
-        { message: "Unauthorized. " + `${e.message}` },
+        { message: "Unauthorized. Please sign in." },
         { status: 401 },
       );
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    if (e instanceof InvalidTokenError) {
+      // token is invalid or expired
+      return NextResponse.json(
+        {
+          message:
+            "Token is invalid or expired. Please sign in or request a new token.",
+        },
+        { status: 401 },
+      );
+    }
+
+    if (e instanceof Error) {
+      console.error(e.message, e.stack);
+    }
+    return NextResponse.json(
+      { message: "Internal Server Error. Please try again later." },
+      { status: 500 },
+    );
   }
 
   const supabase = createClient();
