@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
   try {
     user_id = await authenticate(request);
   } catch (e) {
+    console.warn(e);
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
