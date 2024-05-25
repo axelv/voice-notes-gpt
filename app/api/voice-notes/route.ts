@@ -9,6 +9,8 @@ import OAuth2Server, {
   UnauthorizedRequestError,
   InvalidTokenError,
   InsufficientScopeError,
+  AccessDeniedError,
+  OAuthError,
 } from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../oauth2/model";
 import { createClient } from "@/utils/supabase/server";
@@ -82,24 +84,40 @@ export async function POST(request: NextRequest) {
   try {
     user_id = await authenticate(request);
   } catch (e) {
-    console.warn(e);
     if (e instanceof UnauthorizedRequestError) {
+      console.log(e.message);
       return NextResponse.json(
         { message: "Unauthorized. Please sign in." },
-        { status: 401 },
+        { status: e.code },
+      );
+    }
+    if (e instanceof AccessDeniedError) {
+      /**
+       * The resource owner or authorization server denied the request. See Section 4.1.2.1 of RFC 6749.
+       */
+      console.log(e.message);
+      return NextResponse.json(
+        { message: "Access Denied." },
+        { status: e.code },
       );
     }
     if (e instanceof InvalidTokenError) {
-      // token is invalid or expired
+      /**
+       * The access token provided is expired, revoked, malformed, or invalid for other reasons. See Section 3.1 of RFC 6750.
+       */
+      console.log(e.message);
       return NextResponse.json(
         {
           message:
             "Token is invalid or expired. Please sign in or request a new token.",
         },
-        { status: 401 },
+        { status: e.code },
       );
     }
-
+    if (e instanceof OAuthError) {
+      console.log(e.message);
+      return NextResponse.json({ message: e.name }, { status: e.code });
+    }
     if (e instanceof Error) {
       console.error(e.message, e.stack);
     }
@@ -116,17 +134,21 @@ export async function POST(request: NextRequest) {
     .eq("user_id", user_id)
     .single();
 
-  if (!notionData || error)
+  if (!notionData || error) {
+    console.log("No access token found for Notion API. " + error?.message);
     return NextResponse.json(
       { message: "No access token found for Notion API. Please sign in." },
       { status: 401 },
     );
+  }
   const { access_token: bearer } = notionData;
-  if (!bearer)
+  if (!bearer) {
+    console.log("No access token found for Notion API.");
     return NextResponse.json(
       { message: "No access token found for Notion API. Please sign in." },
       { status: 401 },
     );
+  }
 
   const data = CreateVoiceNoteSchema.parse(await request.json());
   const blocks = markdownToBlocks(data.content);
