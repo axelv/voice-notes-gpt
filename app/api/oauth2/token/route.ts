@@ -8,7 +8,13 @@ const oauth = new OAuth2Server({
   model: OAUTH2_MODEL,
 });
 export async function POST(request: NextRequest) {
-  const req = new Request(request);
+  const url = new URL(request.url);
+  const req = new Request({
+    headers: request.headers,
+    method: request.method,
+    query: Object.fromEntries(url.searchParams.entries()),
+    body: Object.fromEntries((await request.formData()).entries()),
+  });
   const res = new Response();
   await oauth.token(req, res);
   return new NextResponse(res.body, {
