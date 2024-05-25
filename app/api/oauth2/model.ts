@@ -132,10 +132,13 @@ async function saveToken(
     })
     .select()
     .single();
-  if (accessTokenError)
-    throw new AuthorizationError("Failed to save access token");
-  if (!accessTokenData)
-    throw new AuthorizationError("Failed to save access token");
+  if (accessTokenError) {
+    console.log(accessTokenError);
+    throw new AuthorizationError("Failed to save access token.");
+  }
+  if (!accessTokenData) {
+    throw new AuthorizationError("Failed to save access token.");
+  }
 
   if (!token.refreshToken || !token.refreshTokenExpiresAt)
     throw new AuthorizationError("Refresh token not found");
@@ -187,7 +190,10 @@ async function saveAuthorizationCode(
     })
     .select()
     .single();
-  if (error) throw new AuthorizationError("Failed to save authorization code");
+  if (error) {
+    console.log(error);
+    throw new AuthorizationError("Failed to save authorization code");
+  }
   if (!data) throw new AuthorizationError("Failed to save authorization code");
   return {
     authorizationCode: data.authorization_code,
