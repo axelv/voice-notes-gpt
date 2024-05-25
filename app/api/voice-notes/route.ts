@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     if (typeof e === "string") console.error(e);
     if (e instanceof Error) console.error(e.message);
-    console.log("Request body: " + request.text());
+    console.log("Request body: " + (await request.text()));
     return NextResponse.json(
       { message: "Invalid request body" },
       { status: 400 },
