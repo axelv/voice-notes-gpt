@@ -43,11 +43,11 @@ async function authenticate(request: NextRequest) {
   const req = new Request({
     headers: Object.fromEntries(request.headers),
     method: request.method,
-    body: request.json(),
     query: Object.fromEntries(new URL(request.url).searchParams),
   });
   const res = new Response();
   const { user } = await oauth.authenticate(req, res, {});
+  console.log("Authenticated user", user.id);
   return user.id as string;
 }
 
@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  console.log("Fetching access token from Supabase.");
   const supabase = createClient();
   const { data: notionData, error } = await supabase
     .from("notion_token")
@@ -149,6 +150,7 @@ export async function POST(request: NextRequest) {
       { status: 401 },
     );
   }
+  console.log("Parsing request body.");
   let data: z.infer<typeof CreateVoiceNoteSchema> | null = null;
   try {
     data = CreateVoiceNoteSchema.parse(await request.json());
