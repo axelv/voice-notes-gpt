@@ -29,10 +29,10 @@ export async function GET(request: Request) {
       },
     );
     const {
-      error,
+      error: sessionError,
       data: { session, user },
     } = await supabase.auth.exchangeCodeForSession(code);
-    if (error || !session || !user) {
+    if (sessionError || !session || !user) {
       return NextResponse.redirect(`${origin}/auth/auth-code-error`);
     }
     if (session.provider_token) {
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     } else {
       console.log("No notion tokens received.");
     }
-    if (!error) {
+    if (!sessionError) {
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
