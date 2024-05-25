@@ -37,11 +37,14 @@ export async function GET(request: Request) {
     }
     if (session.provider_token) {
       console.log("Storing Notion tokens");
-      supabase.from("notion_token").upsert({
+      const { error } = await supabase.from("notion_token").upsert({
         user_id: user.id,
         access_token: session.provider_token,
         refresh_token: session.refresh_token,
       });
+      if (error) {
+        console.error("Failed to store Notion tokens", error);
+      }
     } else {
       console.log("No notion tokens received.");
     }
