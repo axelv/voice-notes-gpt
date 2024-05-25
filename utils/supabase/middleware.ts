@@ -2,6 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  const { origin, pathname } = new URL(request.url);
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -54,7 +55,18 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user && !pathname.startsWith("/login")) {
+    return NextResponse.redirect(`${origin}/login`, {});
+  }
+  if (!!user && pathname.startsWith("/login")) {
+    return NextResponse.redirect(`${origin}/home`, {});
+  }
+  if (!!user && pathname == "/") {
+    return NextResponse.redirect(`${origin}/home`, {});
+  }
 
   return response;
 }

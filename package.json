@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.4",
+    "@heroicons/react": "^2.1.3",
     "@node-oauth/oauth2-server": "^5.1.0",
     "@notionhq/client": "^2.2.15",
     "@supabase/auth-ui-react": "^0.4.7",
@@ -16,6 +18,8 @@
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.4",
     "@tryfabric/martian": "^1.2.4",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.2.6",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
