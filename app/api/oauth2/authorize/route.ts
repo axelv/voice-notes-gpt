@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   }
 
   const req = new Request({
-    headers: request.headers,
+    headers: Object.fromEntries(request.headers),
     method: request.method,
     query: Object.fromEntries(searchParams),
   });

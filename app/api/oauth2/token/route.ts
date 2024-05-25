@@ -9,29 +9,12 @@ const oauth = new OAuth2Server({
 });
 export async function POST(request: NextRequest) {
   const url = new URL(request.url);
-  let req: Request | null = null;
-  if (
-    request.headers.get("Content-Type") === "application/x-www-form-urlencoded"
-  ) {
-    req = new Request({
-      headers: request.headers,
-      method: request.method,
-      query: Object.fromEntries(url.searchParams.entries()),
-      body: Object.fromEntries((await request.formData()).entries()),
-    });
-  }
-  if (request.headers.get("Content-Type") === "application/json") {
-    req = new Request({
-      headers: request.headers,
-      method: request.method,
-      query: Object.fromEntries(url.searchParams.entries()),
-      body: await request.json(),
-    });
-  }
-  if (!req)
-    throw new Error(
-      "Unsupported Content-Type: " + request.headers.get("Content-Type"),
-    );
+  const req = new Request({
+    headers: Object.fromEntries(request.headers.entries()),
+    method: request.method,
+    query: Object.fromEntries(url.searchParams.entries()),
+    body: Object.fromEntries((await request.formData()).entries()),
+  });
   const res = new Response();
   await oauth.token(req, res);
   return new NextResponse(res.body, {
