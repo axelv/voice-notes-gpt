@@ -153,6 +153,7 @@ export async function POST(request: NextRequest) {
   try {
     data = CreateVoiceNoteSchema.parse(await request.json());
   } catch (e) {
+    if (typeof e === "string") console.error(e);
     if (e instanceof Error) console.error(e.message);
     console.log("Request body: " + request.text());
     return NextResponse.json(
