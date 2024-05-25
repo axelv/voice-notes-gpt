@@ -6,11 +6,12 @@ import { Database } from "@/app/database.types";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const cookieStore = cookies();
   // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get("next") ?? "/";
+  const next =
+    searchParams.get("next") ?? cookieStore.get("next")?.value ?? "/";
 
   if (code) {
-    const cookieStore = cookies();
     const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

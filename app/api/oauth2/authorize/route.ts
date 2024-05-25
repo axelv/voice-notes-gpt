@@ -1,6 +1,7 @@
 import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../model";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
@@ -17,7 +18,10 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(`${origin}/login`);
+    const cookieStore = cookies();
+    const url = new URL(request.url);
+    cookieStore.set("next", `${url.pathname}${url.search}`);
+    return NextResponse.redirect(`${origin}/login`, {});
   }
 
   const req = new Request({
