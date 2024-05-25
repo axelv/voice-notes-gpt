@@ -35,12 +35,16 @@ export async function GET(request: Request) {
     if (error || !session || !user) {
       return NextResponse.redirect(`${origin}/auth/auth-code-error`);
     }
-
-    supabase.from("notion_token").upsert({
-      user_id: user.id,
-      access_token: session.provider_token,
-      refresh_token: session.refresh_token,
-    });
+    if (session.provider_token) {
+      console.log("Storing Notion tokens");
+      supabase.from("notion_token").upsert({
+        user_id: user.id,
+        access_token: session.provider_token,
+        refresh_token: session.refresh_token,
+      });
+    } else {
+      console.log("No notion tokens received.");
+    }
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
     }
