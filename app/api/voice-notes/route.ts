@@ -77,7 +77,12 @@ export async function POST(request: NextRequest) {
     user_id = await authenticate(request);
   } catch (e) {
     console.warn(e);
-    return NextResponse.json({ message: "Unauthorized. " + `{e.message || e} } { status: 401 });
+    if (e instanceof Error)
+      return NextResponse.json(
+        { message: "Unauthorized. " + `${e.message}` },
+        { status: 401 },
+      );
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const supabase = createClient();
