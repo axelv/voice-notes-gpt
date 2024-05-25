@@ -44,6 +44,8 @@ export async function GET(request: Request) {
       });
       if (error) {
         console.error("Failed to store Notion tokens", error);
+      } else {
+        console.log("Notion tokens stored successfully");
       }
     } else {
       console.log("No notion tokens received.");
