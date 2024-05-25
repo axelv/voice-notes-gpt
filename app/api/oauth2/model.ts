@@ -46,7 +46,9 @@ function getClient(clientId: string, clientSecret: string): Promise<Client> {
       grants: ["authorization_code", "refresh_token"],
     });
   }
-  return Promise.reject(new AuthorizationError("Client not found"));
+  return Promise.reject(
+    new AuthorizationError("No client found with id=" + clientId),
+  );
 }
 
 async function getAccessToken(token: string): Promise<Token> {
