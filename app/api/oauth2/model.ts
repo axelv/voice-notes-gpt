@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import {
   Client,
   Token,
@@ -6,6 +5,7 @@ import {
   User,
   RefreshToken,
 } from "@node-oauth/oauth2-server";
+import { createClient } from "@supabase/supabase-js";
 
 if (
   !process.env.CLIENT_ID ||
@@ -49,7 +49,10 @@ function getClient(
 }
 
 async function getAccessToken(token: string): Promise<Token> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { data, error } = await supabase
     .from("access_token")
@@ -72,7 +75,10 @@ async function getAccessToken(token: string): Promise<Token> {
   };
 }
 async function getRefreshToken(refreshToken: string): Promise<RefreshToken> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { error, data } = await supabase
     .from("refresh_token")
@@ -94,7 +100,10 @@ async function getRefreshToken(refreshToken: string): Promise<RefreshToken> {
   };
 }
 async function getAuthorizationCode(code: string): Promise<AuthorizationCode> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { error, data } = await supabase
     .from("authorization_code")
@@ -122,7 +131,10 @@ async function saveToken(
   client: Client,
   user: User,
 ): Promise<Token> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { error: accessTokenError, data: accessTokenData } = await supabase
     .from("access_token")
@@ -181,7 +193,10 @@ async function saveAuthorizationCode(
   client: Client,
   user: User,
 ): Promise<AuthorizationCode> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { data, error } = await supabase
     .from("authorization_code")
@@ -215,7 +230,10 @@ async function saveAuthorizationCode(
 }
 
 async function revokeToken(token: Token): Promise<boolean> {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   if (!token.refreshToken)
     throw new AuthorizationError("Refresh token not found");
@@ -228,7 +246,10 @@ async function revokeToken(token: Token): Promise<boolean> {
 }
 
 async function revokeAuthorizationCode(code: AuthorizationCode) {
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { error } = await supabase
 
