@@ -61,6 +61,9 @@ export async function updateSession(request: NextRequest) {
   if (!!user && pathname.startsWith("/login")) {
     return NextResponse.redirect(`${origin}/home`, {});
   }
+  if (!user && pathname == "/") {
+    //return NextResponse.redirect(`${origin}/login`, {});
+  }
   if (!!user && pathname == "/") {
     return NextResponse.redirect(`${origin}/home`, {});
   }
