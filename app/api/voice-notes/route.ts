@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  console.log("Fetching access token from Supabase.");
+  console.log("Fetching access token from Supabase for user " + user_id);
   const supabase = createClient();
   const { data: notionData, error } = await supabase
     .from("notion_token")
