@@ -20,8 +20,6 @@ if (
   );
 }
 
-const supabase = createClient();
-
 class AuthorizationError extends Error {
   constructor(message: string) {
     super(message);
@@ -51,6 +49,8 @@ function getClient(
 }
 
 async function getAccessToken(token: string): Promise<Token> {
+  const supabase = createClient();
+
   const { data, error } = await supabase
     .from("access_token")
     .select()
@@ -72,6 +72,8 @@ async function getAccessToken(token: string): Promise<Token> {
   };
 }
 async function getRefreshToken(refreshToken: string): Promise<RefreshToken> {
+  const supabase = createClient();
+
   const { error, data } = await supabase
     .from("refresh_token")
     .select()
@@ -92,6 +94,8 @@ async function getRefreshToken(refreshToken: string): Promise<RefreshToken> {
   };
 }
 async function getAuthorizationCode(code: string): Promise<AuthorizationCode> {
+  const supabase = createClient();
+
   const { error, data } = await supabase
     .from("authorization_code")
     .select()
@@ -118,6 +122,8 @@ async function saveToken(
   client: Client,
   user: User,
 ): Promise<Token> {
+  const supabase = createClient();
+
   const { error: accessTokenError, data: accessTokenData } = await supabase
     .from("access_token")
     .insert({
@@ -175,6 +181,8 @@ async function saveAuthorizationCode(
   client: Client,
   user: User,
 ): Promise<AuthorizationCode> {
+  const supabase = createClient();
+
   const { data, error } = await supabase
     .from("authorization_code")
     .insert({
@@ -207,6 +215,8 @@ async function saveAuthorizationCode(
 }
 
 async function revokeToken(token: Token): Promise<boolean> {
+  const supabase = createClient();
+
   if (!token.refreshToken)
     throw new AuthorizationError("Refresh token not found");
   const { error } = await supabase
@@ -218,7 +228,10 @@ async function revokeToken(token: Token): Promise<boolean> {
 }
 
 async function revokeAuthorizationCode(code: AuthorizationCode) {
+  const supabase = createClient();
+
   const { error } = await supabase
+
     .from("authorization_code")
     .delete()
     .eq("authorization_code", code.authorizationCode);
