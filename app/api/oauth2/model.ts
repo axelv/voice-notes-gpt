@@ -1,4 +1,3 @@
-import { Database } from "@/app/database.types";
 import { createClient } from "@/utils/supabase/server";
 import {
   Client,
