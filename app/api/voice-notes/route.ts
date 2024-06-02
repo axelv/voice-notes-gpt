@@ -13,7 +13,7 @@ import OAuth2Server, {
   OAuthError,
 } from "@node-oauth/oauth2-server";
 import { OAUTH2_MODEL } from "../oauth2/model";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
 
@@ -128,7 +128,10 @@ export async function POST(request: NextRequest) {
   }
 
   console.log("Fetching access token from Supabase for user " + user_id);
-  const supabase = createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
   const { data: notionData, error } = await supabase
     .from("notion_token")
     .select("access_token")
